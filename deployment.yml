@@ -1,0 +1,55 @@
+---
+- name: Deploy Docker container
+  hosts: aws
+  become: true
+  tasks:
+    - name: Update apt and install required packages
+      apt:
+        update_cache: yes
+        name: 
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+        update_cache: yes
+
+    - name: Start Docker
+      systemd:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Log into Docker Hub
+      command: docker login -u "{{ docker_username }}" -p "{{ docker_password }}"
+      environment:
+        docker_username: "{{ lookup('env', 'DOCKER_USERNAME') }}"
+        docker_password: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
+
+    - name: Pull image from Docker Hub
+      docker_image:
+        name: josh1991/king-httpd
+        source: pull
+
+    - name: Run Docker container
+      docker_container:
+        name: king-httpd-container
+        image: josh1991/king-httpd
+        state: started
+        ports:
+          - "80:80"
