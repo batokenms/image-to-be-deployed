@@ -12,11 +12,12 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Copy the script into the container at /app
-ADD configuration2.sh /configuration2.sh
+COPY configuration2.sh /app/configuration2.sh
 
 # Make the script executable
-RUN chmod +x /configuration2.sh
+RUN chmod +x /app/configuration2.sh
 
 # Define the command to run the script
-ENTRYPOINT ["./configuration2.sh"]
+ENTRYPOINT ["/app/configuration2.sh"]
+
 

@@ -11,6 +11,8 @@
           - ca-certificates
           - curl
           - software-properties-common
+          - python3-pip
+          - net-tools  # Ensure netstat is available
         state: present
 
     - name: Add Docker GPG key
@@ -35,21 +37,35 @@
         state: started
         enabled: true
 
+    - name: Install Docker SDK for Python
+      pip:
+        name: docker
+        state: present
+
     - name: Log into Docker Hub
-      command: docker login -u "{{ docker_username }}" -p "{{ docker_password }}"
+      command: echo "{{ docker_password }}" | docker login -u "{{ docker_username }}" --password-stdin
       environment:
         docker_username: "{{ lookup('env', 'DOCKER_USERNAME') }}"
         docker_password: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
 
+    - name: Check if port 80 is in use
+      command: netstat -tuln | grep ':80 '
+      register: port_80_in_use
+      ignore_errors: yes
+
+    - name: Set the docker_port variable
+      set_fact:
+        docker_port: "{{ '8080' if port_80_in_use.rc == 0 else '80' }}"
+
     - name: Pull image from Docker Hub
       docker_image:
-        name: josh1991/king-httpd-2
+        name: josh1991/king-httpd
         source: pull
 
     - name: Run Docker container
       docker_container:
-        name: king-httpd-2-container
-        image: josh1991/king-httpd-2
+        name: king-httpd-container
+        image: josh1991/king-httpd
         state: started
         ports:
-          - "80:80"
+          - "{{ docker_port }}:80"
