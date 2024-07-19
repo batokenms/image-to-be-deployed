@@ -48,24 +48,24 @@
         docker_username: "{{ lookup('env', 'DOCKER_USERNAME') }}"
         docker_password: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
 
-    - name: Check if port 80 is in use
-      command: netstat -tuln | grep ':80 '
-      register: port_80_in_use
+    - name: Check if port 8080 is in use
+      command: netstat -tuln | grep ':8080 '
+      register: port_8080_in_use
       ignore_errors: yes
 
     - name: Set the docker_port variable
       set_fact:
-        docker_port: "{{ '8080' if port_80_in_use.rc == 0 else '80' }}"
+        docker_port: "{{ '8080' if port_8080_in_use.rc == 0 else '80' }}"
 
     - name: Pull image from Docker Hub
       docker_image:
-        name: josh1991/king-httpd
+        name: josh1991/king-httpd-2
         source: pull
 
     - name: Run Docker container
       docker_container:
-        name: king-httpd-container
-        image: josh1991/king-httpd
+        name: king-httpd-container-2
+        image: josh1991/king-httpd-2
         state: started
         ports:
-          - "{{ docker_port }}:80"
+          - "{{ docker_port }}:8080"
