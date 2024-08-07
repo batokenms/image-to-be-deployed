@@ -16,7 +16,7 @@ docker run \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v /usr/bin/docker:/usr/bin/docker \
   -v /home/jenkins_home:/var/jenkins_home \
-  josh1991/my-jenkins:latest
+  jeanp12/my-jenkins:latest
 
 # Use the docker exec command to start a shell session inside the running container.
 
