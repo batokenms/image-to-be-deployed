@@ -17,3 +17,16 @@ docker run \
   -v /usr/bin/docker:/usr/bin/docker \
   -v /home/jenkins_home:/var/jenkins_home \
   josh1991/my-jenkins:latest
+
+# Use the docker exec command to start a shell session inside the running container.
+
+docker exec -it <container_name> /bin/bash
+
+# Check the Current User:
+Once you are inside the container, you can check the current user by running:
+
+whoami
+
+# Verify Docker Access 
+su - jenkins
+docker ps
