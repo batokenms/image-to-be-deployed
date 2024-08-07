@@ -16,13 +16,13 @@ sudo systemctl enable docker
 sudo usermod -a -G docker ec2-user
 
 # Build the Docker image
-docker build -t king-httpd-2 .
+docker build -t my-jenkins:latest .
 
 # Tag the image
-docker tag king-httpd-2 josh1991/king-httpd-2
+docker tag my-jenkins:latest josh1991/my-jenkins:latest
 
 # Login to Docker Hub using environment variables
 echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
 
 # Push the image to Docker Hub
-docker push josh1991/king-httpd-2
+docker push josh1991/my-jenkins:latest
