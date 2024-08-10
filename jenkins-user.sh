@@ -13,13 +13,13 @@ sudo systemctl enable docker
 sudo usermod -a -G docker ubuntu
 
 # Build the Docker image
-docker build -t my-jenkins:latest .
+docker build -t data-it-cloud-jenkins:latest .
 
 # Tag the image
-docker tag my-jenkins:latest jeanp12/my-jenkins:latest
+docker tag data-it-cloud-jenkins:latest jeanp12/data-it-cloud-jenkins:latest
 
 # Login to Docker Hub using environment variables
 echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
 
 # Push the image to Docker Hub
-docker push jeanp12/my-jenkins:latest
+docker push jeanp12/data-it-cloud-jenkins:latest
